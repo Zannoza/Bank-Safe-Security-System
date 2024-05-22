@@ -64,12 +64,18 @@
       width: 0;
       border-top: 14.43px solid #00FF00;
     }
+    .message {
+      font-size: 30px;
+      margin-top: 20px;
+    }
+    .vault-image {
+      width: 300px;
+      height: auto;
+      margin: 20px auto;
+    }
   </style>
   <script>
     var attempts = 0;
-    var puzzleAttempts = 0;
-    var countdown;
-    var timeLeft = 180; // 3 minutes
 
     function playSound(filename) {
       var audio = new Audio(filename);
@@ -79,30 +85,37 @@
     function checkPageNumber() {
       var input = document.getElementById("pageInput").value;
       if (input === "106") {
-        document.getElementById("result").innerHTML = "Access Granted!!! Solve this puzzle to get the code to the safe. You have very limited time.";
+        document.getElementById("accessMessage").innerHTML = "ACCESS GRANTED";
+        document.getElementById("accessMessage").style.color = "green";
+        document.getElementById("accessPage").classList.add("hidden");
+        document.getElementById("puzzlePage").classList.remove("hidden");
         playSound('access_granted.mp3');
-        document.getElementById("puzzle").classList.remove("hidden");
         startCountdown();
       } else {
         attempts++;
         if (attempts >= 3) {
-          document.getElementById("result").innerHTML = "Access Denied!!! You are about to get caught. Your heist has come to an end.";
+          document.getElementById("accessMessage").innerHTML = "ACCESS DENIED!!! You are about to get caught. Your heist has come to an end.";
+          document.getElementById("accessMessage").style.color = "red";
           document.getElementById("submitBtn").disabled = true;
           playSound('access_denied.mp3');
         } else {
-          document.getElementById("result").innerHTML = "Access Denied. You have " + (3 - attempts) + " attempt(s) left.";
+          document.getElementById("accessMessage").innerHTML = "ACCESS DENIED. You have " + (3 - attempts) + " attempt(s) left.";
+          document.getElementById("accessMessage").style.color = "red";
           playSound('access_denied.mp3');
         }
       }
     }
 
     function startCountdown() {
-      countdown = setInterval(function() {
+      var timeLeft = 180; // 3 minutes
+      var countdown = setInterval(function() {
+        var minutes = Math.floor(timeLeft / 60);
+        var seconds = timeLeft % 60;
+        document.getElementById("countdown").innerHTML = "Time left: " + minutes + "m " + seconds + "s";
         timeLeft--;
-        document.getElementById("countdown").innerHTML = "Time left: " + timeLeft + " seconds";
-        if (timeLeft <= 0) {
+        if (timeLeft < 0) {
           clearInterval(countdown);
-          document.getElementById("finalResult").innerHTML = "Access Denied!!! You are about to get caught. Your heist has come to an end.";
+          document.getElementById("finalResult").innerHTML = "ACCESS DENIED!!! You are about to get caught. Your heist has come to an end.";
           playSound('access_denied.mp3');
           document.getElementById("puzzleAnswerBtn").disabled = true;
         }
@@ -112,51 +125,50 @@
     function checkPuzzleAnswer() {
       var answer = document.getElementById("puzzleAnswer").value;
       if (answer === "4436") {
-        clearInterval(countdown);
         document.getElementById("finalResult").innerHTML = "You Deserve The Win... Now get to the safe before the other teams to input the code. May The Best and Fastest Team Win";
         playSound('correct.mp3');
       } else {
-        puzzleAttempts++;
-        if (puzzleAttempts >= 3) {
-          document.getElementById("finalResult").innerHTML = "Access Denied!!! You are about to get caught. Your heist has come to an end.";
-          playSound('access_denied.mp3');
-          document.getElementById("puzzleAnswerBtn").disabled = true;
-        } else {
-          document.getElementById("finalResult").innerHTML = "Incorrect. Try again.";
-          playSound('incorrect.mp3');
-        }
+        document.getElementById("finalResult").innerHTML = "Incorrect. Try again.";
+        playSound('incorrect.mp3');
       }
     }
   </script>
 </head>
 <body>
-  <div class="container">
+  <div class="container" id="accessPage">
+    <img src="vault_image.png" alt="Vault Image" class="vault-image">
     <h2>Vault Security System Login</h2>
     <input type="text" id="pageInput" placeholder="Enter Book Page Number">
     <button id="submitBtn" onclick="checkPageNumber()">Submit</button>
-    <p id="result"></p>
-    
-    <div id="puzzle" class="hidden">
-      <h3>Puzzle: Find the Code to the Safe</h3>
-      <p id="countdown">Time left: 180 seconds</p>
-      <p>Count the total number of sides of the following shapes:</p>
-      <div>
-        <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div>
-      </div>
-      <div>
-        <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div>
-      </div>
-      <div>
-        <div class="shape triangle"></div> <div class="shape triangle"></div> <div class="shape triangle"></div> <div class="shape triangle"></div>
-      </div>
-      <div>
-        <div class="shape hexagon"></div> <div class="shape hexagon"></div> <div class="shape hexagon"></div> <div class="shape hexagon"></div> <div class="shape hexagon"></div>
-      </div>
-      <p>Enter the total number of sides:</p>
-      <input type="text" id="puzzleAnswer">
-      <button id="puzzleAnswerBtn" onclick="checkPuzzleAnswer()">Submit Answer</button>
-      <p id="finalResult"></p>
-    </div>
+    <p id="accessMessage" class="message"></p>
   </div>
+
+  <div class="container hidden" id="puzzlePage">
+    <h3>Puzzle: Find the Code to the Safe</h3>
+    <p id="countdown">Time left: 3m 0s</p>
+    <p>Count the total number of sides of the following shapes:</p>
+    <div>
+      <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div>
+    </div>
+    <div>
+      <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div>
+    </div>
+    <div>
+      <div class="shape triangle"></div> <div class="shape triangle"></div> <div class="shape triangle"></div> <div class="shape triangle"></div>
+    </div>
+    <div>
+      <div class="shape hexagon"></div> <div class="shape hexagon"></div> <div class="shape hexagon"></div> <div class="shape hexagon"></div> <div class="shape hexagon"></div>
+    </div>
+    <p>Enter the total number of sides:</p>
+    <input type="text" id="puzzleAnswer">
+    <button id="puzzleAnswerBtn" onclick="checkPuzzleAnswer()">Submit Answer</button>
+    <p id="finalResult" class="message"></p>
+  </div>
+
+  <!-- Add sound files to the project directory and reference them here -->
+  <audio id="accessGrantedSound" src="access_granted.mp3" preload="auto"></audio>
+  <audio id="accessDeniedSound" src="access_denied.mp3" preload="auto"></audio>
+  <audio id="correctSound" src="correct.mp3" preload="auto"></audio>
+  <audio id="incorrectSound" src="incorrect.mp3" preload="auto"></audio>
 </body>
 </html>
