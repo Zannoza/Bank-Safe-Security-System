@@ -1,55 +1,162 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Digital Hacking Puzzle</title>
+  <title>Vault Security System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #00FF00;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      margin-top: 50px;
+    }
+    input, button {
+      font-size: 20px;
+      margin: 10px;
+    }
+    .hidden {
+      display: none;
+    }
+    .shape {
+      display: inline-block;
+      margin: 5px;
+      width: 50px;
+      height: 50px;
+    }
+    .rectangle {
+      background-color: #FF0000;
+    }
+    .square {
+      background-color: #0000FF;
+    }
+    .triangle {
+      width: 0;
+      height: 0;
+      border-left: 25px solid transparent;
+      border-right: 25px solid transparent;
+      border-bottom: 50px solid #FFFF00;
+    }
+    .hexagon {
+      width: 50px;
+      height: 28.87px;
+      background-color: #00FF00;
+      position: relative;
+      margin-top: 14.43px;
+    }
+    .hexagon:before,
+    .hexagon:after {
+      content: "";
+      position: absolute;
+      width: 0;
+      border-left: 25px solid transparent;
+      border-right: 25px solid transparent;
+    }
+    .hexagon:before {
+      bottom: 100%;
+      border-bottom: 14.43px solid #00FF00;
+    }
+    .hexagon:after {
+      top: 100%;
+      width: 0;
+      border-top: 14.43px solid #00FF00;
+    }
+  </style>
   <script>
     var attempts = 0;
+    var puzzleAttempts = 0;
+    var countdown;
+    var timeLeft = 180; // 3 minutes
+
+    function playSound(filename) {
+      var audio = new Audio(filename);
+      audio.play();
+    }
 
     function checkPageNumber() {
       var input = document.getElementById("pageInput").value;
       if (input === "106") {
         document.getElementById("result").innerHTML = "Access Granted!!! Solve this puzzle to get the code to the safe. You have very limited time.";
-        document.getElementById("puzzle").style.display = "block";
+        playSound('access_granted.mp3');
+        document.getElementById("puzzle").classList.remove("hidden");
+        startCountdown();
       } else {
         attempts++;
         if (attempts >= 3) {
-          document.getElementById("result").innerHTML = "Access Denied. You have exceeded the maximum number of attempts. Your heist comes to an end.";
+          document.getElementById("result").innerHTML = "Access Denied!!! You are about to get caught. Your heist has come to an end.";
           document.getElementById("submitBtn").disabled = true;
+          playSound('access_denied.mp3');
         } else {
           document.getElementById("result").innerHTML = "Access Denied. You have " + (3 - attempts) + " attempt(s) left.";
+          playSound('access_denied.mp3');
         }
       }
+    }
+
+    function startCountdown() {
+      countdown = setInterval(function() {
+        timeLeft--;
+        document.getElementById("countdown").innerHTML = "Time left: " + timeLeft + " seconds";
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          document.getElementById("finalResult").innerHTML = "Access Denied!!! You are about to get caught. Your heist has come to an end.";
+          playSound('access_denied.mp3');
+          document.getElementById("puzzleAnswerBtn").disabled = true;
+        }
+      }, 1000);
     }
 
     function checkPuzzleAnswer() {
       var answer = document.getElementById("puzzleAnswer").value;
       if (answer === "4436") {
-        document.getElementById("finalResult").innerHTML = "Correct! You have retrieved the code to the safe!";
+        clearInterval(countdown);
+        document.getElementById("finalResult").innerHTML = "You Deserve The Win... Now get to the safe before the other teams to input the code. May The Best and Fastest Team Win";
+        playSound('correct.mp3');
       } else {
-        document.getElementById("finalResult").innerHTML = "Incorrect. Try again.";
+        puzzleAttempts++;
+        if (puzzleAttempts >= 3) {
+          document.getElementById("finalResult").innerHTML = "Access Denied!!! You are about to get caught. Your heist has come to an end.";
+          playSound('access_denied.mp3');
+          document.getElementById("puzzleAnswerBtn").disabled = true;
+        } else {
+          document.getElementById("finalResult").innerHTML = "Incorrect. Try again.";
+          playSound('incorrect.mp3');
+        }
       }
     }
   </script>
 </head>
 <body>
-  <h2>Enter the Book Page Number</h2>
-  <input type="text" id="pageInput">
-  <button id="submitBtn" onclick="checkPageNumber()">Submit</button>
-  <p id="result"></p>
-  
-  <div id="puzzle" style="display:none;">
-    <h3>Puzzle: Find the Code to the Safe</h3>
-    <p>Count the total number of sides of the following shapes:</p>
-    <ul>
-      <li>Multiple 4-sided rectangles</li>
-      <li>Multiple 4-sided squares</li>
-      <li>Multiple 3-sided triangles</li>
-      <li>Multiple 6-sided hexagons</li>
-    </ul>
-    <p>Enter the total number of sides:</p>
-    <input type="text" id="puzzleAnswer">
-    <button onclick="checkPuzzleAnswer()">Submit Answer</button>
-    <p id="finalResult"></p>
+  <div class="container">
+    <h2>Vault Security System Login</h2>
+    <input type="text" id="pageInput" placeholder="Enter Book Page Number">
+    <button id="submitBtn" onclick="checkPageNumber()">Submit</button>
+    <p id="result"></p>
+    
+    <div id="puzzle" class="hidden">
+      <h3>Puzzle: Find the Code to the Safe</h3>
+      <p id="countdown">Time left: 180 seconds</p>
+      <p>Count the total number of sides of the following shapes:</p>
+      <div>
+        <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div>
+      </div>
+      <div>
+        <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div>
+      </div>
+      <div>
+        <div class="shape triangle"></div> <div class="shape triangle"></div> <div class="shape triangle"></div> <div class="shape triangle"></div>
+      </div>
+      <div>
+        <div class="shape hexagon"></div> <div class="shape hexagon"></div> <div class="shape hexagon"></div> <div class="shape hexagon"></div> <div class="shape hexagon"></div>
+      </div>
+      <p>Enter the total number of sides:</p>
+      <input type="text" id="puzzleAnswer">
+      <button id="puzzleAnswerBtn" onclick="checkPuzzleAnswer()">Submit Answer</button>
+      <p id="finalResult"></p>
+    </div>
   </div>
 </body>
 </html>
