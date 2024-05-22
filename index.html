@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Digital Hacking Puzzle</title>
+  <script>
+    var attempts = 0;
+
+    function checkPageNumber() {
+      var input = document.getElementById("pageInput").value;
+      if (input === "106") {
+        document.getElementById("result").innerHTML = "Access Granted!!! Solve this puzzle to get the code to the safe. You have very limited time.";
+        document.getElementById("puzzle").style.display = "block";
+      } else {
+        attempts++;
+        if (attempts >= 3) {
+          document.getElementById("result").innerHTML = "Access Denied. You have exceeded the maximum number of attempts. Your heist comes to an end.";
+          document.getElementById("submitBtn").disabled = true;
+        } else {
+          document.getElementById("result").innerHTML = "Access Denied. You have " + (3 - attempts) + " attempt(s) left.";
+        }
+      }
+    }
+
+    function checkPuzzleAnswer() {
+      var answer = document.getElementById("puzzleAnswer").value;
+      if (answer === "4436") {
+        document.getElementById("finalResult").innerHTML = "Correct! You have retrieved the code to the safe!";
+      } else {
+        document.getElementById("finalResult").innerHTML = "Incorrect. Try again.";
+      }
+    }
+  </script>
+</head>
+<body>
+  <h2>Enter the Book Page Number</h2>
+  <input type="text" id="pageInput">
+  <button id="submitBtn" onclick="checkPageNumber()">Submit</button>
+  <p id="result"></p>
+  
+  <div id="puzzle" style="display:none;">
+    <h3>Puzzle: Find the Code to the Safe</h3>
+    <p>Count the total number of sides of the following shapes:</p>
+    <ul>
+      <li>Multiple 4-sided rectangles</li>
+      <li>Multiple 4-sided squares</li>
+      <li>Multiple 3-sided triangles</li>
+      <li>Multiple 6-sided hexagons</li>
+    </ul>
+    <p>Enter the total number of sides:</p>
+    <input type="text" id="puzzleAnswer">
+    <button onclick="checkPuzzleAnswer()">Submit Answer</button>
+    <p id="finalResult"></p>
+  </div>
+</body>
+</html>
