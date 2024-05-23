@@ -111,7 +111,7 @@
       var countdown = setInterval(function() {
         var minutes = Math.floor(timeLeft / 60);
         var seconds = timeLeft % 60;
-        document.getElementById("countdown").innerHTML = "Time left: " + minutes + "m " + seconds + "s";
+        document.getElementById("countdown").innerHTML = "Time left: " + minutes + "m " + (seconds < 10 ? "0" : "") + seconds + "s";
         timeLeft--;
         if (timeLeft < 0) {
           clearInterval(countdown);
@@ -145,13 +145,13 @@
 
   <div class="container hidden" id="puzzlePage">
     <h3>Puzzle: Find the Code to the Safe</h3>
-    <p id="countdown">Time left: 3m 0s</p>
+    <p id="countdown">Time left: 3m 00s</p>
     <p>Count the total number of sides of the following shapes:</p>
     <div>
       <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div>
     </div>
     <div>
-      <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div>
+      <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class shape="square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div>
     </div>
     <div>
       <div class="shape triangle"></div> <div class="shape triangle"></div> <div class="shape triangle"></div> <div class="shape triangle"></div>
