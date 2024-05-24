@@ -76,6 +76,9 @@
   </style>
   <script>
     var attempts = 0;
+    var puzzleAttempts = 0;
+    var countdown;
+    var timeLeft = 180; // 3 minutes
 
     function playSound(filename) {
       var audio = new Audio(filename);
@@ -85,6 +88,7 @@
     function checkPageNumber() {
       var input = document.getElementById("pageInput").value;
       if (input === "106") {
+        localStorage.setItem('accessGranted', 'true');
         document.getElementById("accessMessage").innerHTML = "ACCESS GRANTED";
         document.getElementById("accessMessage").style.color = "green";
         document.getElementById("accessPage").classList.add("hidden");
@@ -93,7 +97,9 @@
         startCountdown();
       } else {
         attempts++;
+        localStorage.setItem('attempts', attempts);
         if (attempts >= 3) {
+          localStorage.setItem('accessGranted', 'denied');
           document.getElementById("accessMessage").innerHTML = "ACCESS DENIED!!! You are about to get caught. Your heist has come to an end.";
           document.getElementById("accessMessage").style.color = "red";
           document.getElementById("submitBtn").disabled = true;
@@ -107,12 +113,12 @@
     }
 
     function startCountdown() {
-      var timeLeft = 180; // 3 minutes
-      var countdown = setInterval(function() {
+      countdown = setInterval(function() {
         var minutes = Math.floor(timeLeft / 60);
         var seconds = timeLeft % 60;
         document.getElementById("countdown").innerHTML = "Time left: " + minutes + "m " + (seconds < 10 ? "0" : "") + seconds + "s";
         timeLeft--;
+        localStorage.setItem('timeLeft', timeLeft);
         if (timeLeft < 0) {
           clearInterval(countdown);
           document.getElementById("finalResult").innerHTML = "ACCESS DENIED!!! You are about to get caught. Your heist has come to an end.";
@@ -125,13 +131,40 @@
     function checkPuzzleAnswer() {
       var answer = document.getElementById("puzzleAnswer").value;
       if (answer === "4436") {
+        localStorage.setItem('puzzleSolved', 'true');
         document.getElementById("finalResult").innerHTML = "You Deserve The Win... Now get to the safe before the other teams to input the code. May The Best and Fastest Team Win";
         playSound('correct.mp3');
       } else {
-        document.getElementById("finalResult").innerHTML = "Incorrect. Try again.";
-        playSound('incorrect.mp3');
+        puzzleAttempts++;
+        localStorage.setItem('puzzleAttempts', puzzleAttempts);
+        if (puzzleAttempts >= 3) {
+          document.getElementById("finalResult").innerHTML = "ACCESS DENIED!!! You are about to get caught. Your heist has come to an end.";
+          playSound('access_denied.mp3');
+          document.getElementById("puzzleAnswerBtn").disabled = true;
+        } else {
+          document.getElementById("finalResult").innerHTML = "Incorrect. Try again.";
+          playSound('incorrect.mp3');
+        }
       }
     }
+
+    function initializeGame() {
+      if (localStorage.getItem('accessGranted') === 'true') {
+        document.getElementById("accessPage").classList.add("hidden");
+        document.getElementById("puzzlePage").classList.remove("hidden");
+        timeLeft = parseInt(localStorage.getItem('timeLeft')) || 180;
+        startCountdown();
+      } else if (localStorage.getItem('accessGranted') === 'denied') {
+        document.getElementById("accessMessage").innerHTML = "ACCESS DENIED!!! You are about to get caught. Your heist has come to an end.";
+        document.getElementById("accessMessage").style.color = "red";
+        document.getElementById("submitBtn").disabled = true;
+      }
+
+      attempts = parseInt(localStorage.getItem('attempts')) || 0;
+      puzzleAttempts = parseInt(localStorage.getItem('puzzleAttempts')) || 0;
+    }
+
+    window.onload = initializeGame;
   </script>
 </head>
 <body>
@@ -151,7 +184,7 @@
       <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div> <div class="shape rectangle"></div>
     </div>
     <div>
-      <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class shape="square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div>
+      <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div> <div class="shape square"></div>
     </div>
     <div>
       <div class="shape triangle"></div> <div class="shape triangle"></div> <div class="shape triangle"></div> <div class="shape triangle"></div>
